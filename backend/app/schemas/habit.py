@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 class HabitBase(BaseModel):
     habit_name: str
+    unit: Optional[str] = None          # user-defined unit label e.g. "hours/day"
     current_level: float
     target_level: float
     trigger: str
@@ -18,6 +19,7 @@ class HabitCreate(HabitBase):
 
 class HabitUpdate(BaseModel):
     habit_name: Optional[str] = None
+    unit: Optional[str] = None
     current_level: Optional[float] = None
     target_level: Optional[float] = None
     trigger: Optional[str] = None

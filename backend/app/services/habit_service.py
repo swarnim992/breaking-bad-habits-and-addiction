@@ -18,6 +18,7 @@ class HabitService:
             id=str(uuid.uuid4()),
             user_id=payload.user_id,
             habit_name=payload.habit_name,
+            unit=payload.unit,
             current_level=payload.current_level,
             target_level=payload.target_level,
             trigger=payload.trigger,
