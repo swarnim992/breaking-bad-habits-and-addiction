@@ -6,9 +6,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # ── Project Info ──────────────────────────────────────────────────────────
-    PROJECT_NAME: str = "PromptWar"
+    PROJECT_NAME: str = "ai-breaking-bad-habits-and-addiction"
     VERSION: str = "1.0.0"
-    DESCRIPTION: str = "PromptWar habit coaching and check-in API"
+    DESCRIPTION: str = "AI-powered habit coaching and addiction recovery API"
     API_V1_STR: str = "/api/v1"
 
     # ── CORS ──────────────────────────────────────────────────────────────────
