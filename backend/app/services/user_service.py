@@ -1,48 +1,34 @@
-"""
-UserService — simple in-memory skeleton.
-Replace with real DB calls when you add a database.
-"""
-
 import uuid
-from typing import Optional
+from sqlalchemy.orm import Session
 
 from app.core.exceptions import ConflictError, NotFoundError
-from app.schemas.user import UserCreate, UserResponse
+from app.models.user import User
+from app.schemas.user import UserCreate
 
 
 class UserService:
-    # In-memory store (replace with DB repository later)
-    _store: dict[str, dict] = {}
-
-    def get_all(self) -> list[UserResponse]:
+    def get_all(self, db: Session) -> list[User]:
         """Return all users."""
-        return [
-            UserResponse(id=u["id"], username=u["username"], email=u["email"])
-            for u in self._store.values()
-        ]
+        return db.query(User).all()
 
-    def create_user(self, payload: UserCreate) -> UserResponse:
-        """Create a new user. Raises ConflictError if username already taken."""
-        if self._find_by_username(payload.username):
-            raise ConflictError(f"Username '{payload.username}' is already taken")
+    def create_user(self, db: Session, payload: UserCreate) -> User:
+        """Create a new user. If payload.id is provided, check for conflicts."""
+        user_id = payload.id or str(uuid.uuid4())
+        
+        # Check if user already exists
+        existing = db.query(User).filter(User.id == user_id).first()
+        if existing:
+            raise ConflictError(f"User with ID '{user_id}' already exists")
 
-        user_id = str(uuid.uuid4())
-        user = {
-            "id": user_id,
-            "username": payload.username,
-            "email": payload.email,
-        }
-        self._store[user_id] = user
-        return UserResponse(**user)
+        user = User(id=user_id)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return user
 
-    def get_by_id(self, user_id: str) -> UserResponse:
+    def get_by_id(self, db: Session, user_id: str) -> User:
         """Fetch a user by ID. Raises NotFoundError if missing."""
-        user = self._store.get(user_id)
+        user = db.query(User).filter(User.id == user_id).first()
         if not user:
             raise NotFoundError("User")
-        return UserResponse(**user)
-
-    def _find_by_username(self, username: str) -> Optional[dict]:
-        return next(
-            (u for u in self._store.values() if u["username"] == username), None
-        )
+        return user

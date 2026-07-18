@@ -18,6 +18,7 @@ class Settings(BaseSettings):
 
     # ── Environment ───────────────────────────────────────────────────────────
     ENVIRONMENT: str = "development"
+    DATABASE_URL: str = "sqlite:///./app.db"
 
     model_config = SettingsConfigDict(
         env_file=".env",

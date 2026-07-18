@@ -32,3 +32,8 @@ node_modules/
 out/
 
 implementation_plan.md
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
