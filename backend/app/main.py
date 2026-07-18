@@ -3,10 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
 from app.config import settings
+from app.core.database import Base, engine
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import setup_logging
+from app import models  # noqa: F401
 
 setup_logging()
+
+# Create SQLite database tables on startup
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
