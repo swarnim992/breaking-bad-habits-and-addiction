@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog } from "@/components/ui/Dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { buildUrgeIntervention } from "@/lib/dashboardUtils";
 import { urgeService } from "@/services/urgeService";
 import type { Habit } from "@/types/habit";
@@ -33,7 +42,7 @@ export function UrgeSupportButton({ habit, onComplete }: UrgeSupportButtonProps)
 
   function handleClose() {
     setOpen(false);
-    reset();
+    setTimeout(reset, 300);
   }
 
   async function handleSubmitFeeling() {
@@ -41,10 +50,8 @@ export function UrgeSupportButton({ habit, onComplete }: UrgeSupportButtonProps)
       setError("Please describe what you're feeling (at least 5 characters).");
       return;
     }
-
     setLoading(true);
     setError(null);
-
     try {
       const aiResponse = buildUrgeIntervention(habit, feeling);
       const urge = await urgeService.create({
@@ -68,7 +75,6 @@ export function UrgeSupportButton({ habit, onComplete }: UrgeSupportButtonProps)
     if (!urgeId) return;
     setLoading(true);
     setError(null);
-
     try {
       await urgeService.updateOutcome(urgeId, outcome);
       setStep("outcome");
@@ -86,109 +92,104 @@ export function UrgeSupportButton({ habit, onComplete }: UrgeSupportButtonProps)
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="animate-pulse-glow w-full rounded-2xl px-6 py-4 text-base font-bold text-white"
+        className="animate-pulse-glow w-full rounded-xl px-6 py-4 text-base font-bold text-white
+          transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
         style={{
-          background: "linear-gradient(135deg, #ff6584 0%, #6c63ff 100%)",
-          boxShadow: "0 8px 32px rgba(255,101,132,0.35)",
+          background: "linear-gradient(135deg, oklch(0.5413 0.2466 293.009) 0%, oklch(0.7874 0.1179 295.7538) 100%)",
+          boxShadow: "0 8px 32px oklch(0.7874 0.1179 295.7538 / 0.35)",
         }}
       >
-        I&apos;m Having an Urge
+        🚨 I&apos;m Having an Urge
       </button>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        title={
-          step === "feeling"
-            ? "What's happening right now?"
-            : step === "response"
-            ? "Your coach says"
-            : "You showed up — that matters"
-        }
-        description={
-          step === "feeling"
-            ? "Describe what you're feeling. We'll help you through this moment."
-            : undefined
-        }
-      >
-        {step === "feeling" && (
-          <div className="flex flex-col gap-4">
-            <textarea
-              value={feeling}
-              onChange={(e) => {
-                setFeeling(e.target.value);
-                setError(null);
-              }}
-              placeholder="e.g. I'm bored and want to scroll Instagram…"
-              className="min-h-[120px] w-full resize-y rounded-xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] p-4 text-sm text-[#e8eaf6] outline-none focus:border-[#6c63ff]"
-            />
-            {error && <p className="text-sm text-[#ff8fab]">{error}</p>}
-            <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="rounded-xl px-4 py-2 text-sm font-medium text-[#8892b0]"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={loading}
-                onClick={handleSubmitFeeling}
-                className="rounded-xl px-5 py-2 text-sm font-bold text-white disabled:opacity-60"
-                style={{ background: "linear-gradient(135deg, #6c63ff, #9f7aea)" }}
-              >
-                {loading ? "Sending…" : "Get support"}
-              </button>
-            </div>
-          </div>
-        )}
+      <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
+        <DialogContent className="sm:max-w-md bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground">
+              {step === "feeling"
+                ? "What's happening right now?"
+                : step === "response"
+                ? "Your coach says"
+                : "You showed up — that matters 💪"}
+            </DialogTitle>
+            {step === "feeling" && (
+              <DialogDescription>
+                Describe what you&apos;re feeling. We&apos;ll help you through this moment.
+              </DialogDescription>
+            )}
+          </DialogHeader>
 
-        {step === "response" && (
-          <div className="flex flex-col gap-4">
-            <div className="rounded-xl border border-[rgba(108,99,255,0.2)] bg-[rgba(108,99,255,0.08)] p-4">
-              <p className="whitespace-pre-line text-sm leading-relaxed text-[#c5cae9]">
-                {response}
+          {step === "feeling" && (
+            <div className="space-y-4">
+              <Textarea
+                value={feeling}
+                onChange={(e) => { setFeeling(e.target.value); setError(null); }}
+                placeholder="e.g. I'm bored and want to scroll Instagram…"
+                className="min-h-[120px] bg-background border-border text-foreground resize-y"
+              />
+              {error && (
+                <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={handleClose} className="border-border">
+                  Cancel
+                </Button>
+                <Button onClick={handleSubmitFeeling} disabled={loading}>
+                  {loading ? "Sending…" : "Get support"}
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+
+          {step === "response" && (
+            <div className="space-y-4">
+              <div className="rounded-xl border border-primary/25 bg-primary/10 p-4">
+                <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+                  {response}
+                </p>
+              </div>
+              <p className="text-sm font-medium text-foreground">How did it go?</p>
+              {error && (
+                <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  disabled={loading}
+                  onClick={() => handleOutcome("resisted")}
+                  variant="outline"
+                  className="border-green-500/40 bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:text-green-300"
+                >
+                  I Resisted 🎉
+                </Button>
+                <Button
+                  disabled={loading}
+                  onClick={() => handleOutcome("gave_in")}
+                  variant="outline"
+                  className="border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20"
+                >
+                  I Gave In
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {step === "outcome" && (
+            <div className="space-y-4">
+              <p className="text-sm leading-relaxed text-foreground/80">
+                Every urge you notice is progress. Your coach will adapt based on what you shared.
               </p>
+              <DialogFooter>
+                <Button onClick={handleClose} className="w-full sm:w-auto">
+                  Back to dashboard
+                </Button>
+              </DialogFooter>
             </div>
-            <p className="text-sm text-[#8892b0]">How did it go?</p>
-            {error && <p className="text-sm text-[#ff8fab]">{error}</p>}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                disabled={loading}
-                onClick={() => handleOutcome("resisted")}
-                className="rounded-xl border border-[rgba(74,222,128,0.3)] bg-[rgba(74,222,128,0.1)] px-4 py-3 text-sm font-semibold text-[#4ade80] disabled:opacity-60"
-              >
-                I Resisted 🎉
-              </button>
-              <button
-                type="button"
-                disabled={loading}
-                onClick={() => handleOutcome("gave_in")}
-                className="rounded-xl border border-[rgba(255,101,132,0.3)] bg-[rgba(255,101,132,0.1)] px-4 py-3 text-sm font-semibold text-[#ff8fab] disabled:opacity-60"
-              >
-                I Gave In
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === "outcome" && (
-          <div className="flex flex-col gap-4">
-            <p className="text-sm leading-relaxed text-[#c5cae9]">
-              Every urge you notice is progress. Your coach will adapt based on what you shared.
-            </p>
-            <button
-              type="button"
-              onClick={handleClose}
-              className="self-end rounded-xl px-5 py-2 text-sm font-bold text-white"
-              style={{ background: "linear-gradient(135deg, #6c63ff, #9f7aea)" }}
-            >
-              Back to dashboard
-            </button>
-          </div>
-        )}
+          )}
+        </DialogContent>
       </Dialog>
     </>
   );

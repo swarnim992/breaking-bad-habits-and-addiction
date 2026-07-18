@@ -104,7 +104,7 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
         motivation: form.motivation,
       });
       localStorage.setItem(HABIT_ID_KEY, habit.id);
-      router.push("/dashboard");
+      router.push("/plan");
     } catch (err) {
       console.error(err);
       setError("Something went wrong saving your habit. Please try again.");

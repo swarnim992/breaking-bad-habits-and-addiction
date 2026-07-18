@@ -1,38 +1,28 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+"use client"
 
-interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
-  value: number;
-  max?: number;
-  showLabel?: boolean;
-}
+import * as React from "react"
+import * as ProgressPrimitive from "@radix-ui/react-progress"
 
-export function Progress({
-  value,
-  max = 100,
-  showLabel = false,
-  className,
-  ...props
-}: ProgressProps) {
-  const pct = Math.min(100, Math.max(0, (value / max) * 100));
+import { cn } from "@/lib/utils"
 
-  return (
-    <div className={cn("w-full", className)} {...props}>
-      <div
-        className="h-3 w-full overflow-hidden rounded-full"
-        style={{ background: "rgba(255,255,255,0.08)" }}
-      >
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{
-            width: `${pct}%`,
-            background: "linear-gradient(90deg, #6c63ff 0%, #9f7aea 100%)",
-          }}
-        />
-      </div>
-      {showLabel && (
-        <p className="mt-2 text-right text-xs text-[#8892b0]">{Math.round(pct)}%</p>
-      )}
-    </div>
-  );
-}
+const Progress = React.forwardRef<
+  React.ElementRef<typeof ProgressPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
+>(({ className, value, ...props }, ref) => (
+  <ProgressPrimitive.Root
+    ref={ref}
+    className={cn(
+      "relative h-4 w-full overflow-hidden rounded-full bg-secondary",
+      className
+    )}
+    {...props}
+  >
+    <ProgressPrimitive.Indicator
+      className="h-full w-full flex-1 bg-primary transition-all"
+      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    />
+  </ProgressPrimitive.Root>
+))
+Progress.displayName = ProgressPrimitive.Root.displayName
+
+export { Progress }

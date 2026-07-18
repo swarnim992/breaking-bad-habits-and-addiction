@@ -1,24 +1,46 @@
 "use client";
 
-import { Badge } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/badge";
 import { getGreeting } from "@/lib/dashboardUtils";
 
 interface DashboardHeaderProps {
   streak: number;
+  habitName: string;
 }
 
-export function DashboardHeader({ streak }: DashboardHeaderProps) {
+export function DashboardHeader({ streak, habitName }: DashboardHeaderProps) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <p className="text-sm text-[#8892b0]">{getGreeting()} 👋</p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-[#e8eaf6]">
-          Your recovery dashboard
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between animate-fade-in-up">
+      <div className="space-y-1">
+        <p className="text-sm text-muted-foreground font-medium">
+          {getGreeting()} 👋
+        </p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+          Your Dashboard
         </h1>
+        <p className="text-sm text-muted-foreground">
+          Tracking{" "}
+          <span className="font-semibold text-primary">{habitName}</span>
+        </p>
       </div>
-      <Badge variant={streak > 0 ? "success" : "default"} className="self-start text-sm">
-        🔥 {streak} Day Streak
-      </Badge>
+
+      <div className="flex items-center gap-2 self-start">
+        {streak > 0 ? (
+          <Badge
+            className="gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold
+              bg-primary/15 text-primary border-primary/30 hover:bg-primary/20"
+          >
+            🔥 {streak} Day Streak
+          </Badge>
+        ) : (
+          <Badge
+            variant="secondary"
+            className="gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold"
+          >
+            Start your streak today
+          </Badge>
+        )}
+      </div>
     </div>
   );
 }

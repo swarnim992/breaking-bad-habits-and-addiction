@@ -74,13 +74,12 @@ def test_checkin_endpoints(client):
     }
     habit_id = client.post("/api/v1/habits", json=habit_payload).json()["id"]
 
-    # 2. Log check-in
+    # 2. Log check-in (AI feedback is generated server-side)
     checkin_payload = {
         "habit_id": habit_id,
         "progress": 2.0,
         "mood": "okay",
         "note": "Played 2 hours, controlled the urge after dinner.",
-        "ai_feedback": "Great job keeping it below 3 hours!",
     }
     create_response = client.post("/api/v1/checkins", json=checkin_payload)
     assert create_response.status_code == 201
@@ -88,6 +87,8 @@ def test_checkin_endpoints(client):
     assert checkin_data["habit_id"] == habit_id
     assert checkin_data["progress"] == 2.0
     assert checkin_data["mood"] == "okay"
+    assert checkin_data["ai_feedback"] is not None
+    assert len(checkin_data["ai_feedback"]) > 0
     checkin_id = checkin_data["id"]
 
     # 3. Retrieve check-ins by habit_id via query parameter
@@ -148,3 +149,28 @@ def test_urge_endpoints(client):
     get_path = client.get(f"/api/v1/urges/habit/{habit_id}")
     assert get_path.status_code == 200
     assert len(get_path.json()) == 1
+
+
+def test_coach_endpoints(client):
+    # 1. Create user and habit
+    user_id = f"test-user-coach-{uuid.uuid4()}"
+    client.post("/api/v1/users", json={"id": user_id})
+    habit_payload = {
+        "user_id": user_id,
+        "habit_name": "Screen Time",
+        "unit": "hours/day",
+        "current_level": 4.5,
+        "target_level": 1.0,
+        "trigger": "Boredom at night",
+        "motivation": "Better sleep and health",
+    }
+    habit_id = client.post("/api/v1/habits", json=habit_payload).json()["id"]
+
+    # 2. Call /coach/generate-plan
+    coach_response = client.post("/api/v1/coach/generate-plan", json={"habit_id": habit_id})
+    assert coach_response.status_code == 200
+    data = coach_response.json()
+    assert data["id"] == habit_id
+    assert data["ai_plan"] is not None
+    assert "Goal" in data["ai_plan"]
+    assert "Trigger" in data["ai_plan"]
