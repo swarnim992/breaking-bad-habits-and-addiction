@@ -12,6 +12,7 @@ class Habit(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     habit_name = Column(String, nullable=False)
+    unit = Column(String, nullable=True)          # user-defined unit label e.g. "hours/day"
     current_level = Column(Float, nullable=False)
     target_level = Column(Float, nullable=False)
     trigger = Column(Text, nullable=False)
