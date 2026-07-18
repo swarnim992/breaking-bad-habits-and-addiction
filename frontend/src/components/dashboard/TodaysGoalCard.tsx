@@ -6,8 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/Card";
-import { Progress } from "@/components/ui/Progress";
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { getGoalProgress, getTodayCheckIn } from "@/lib/dashboardUtils";
 import type { CheckIn } from "@/types/checkin";
 import type { Habit } from "@/types/habit";
@@ -21,40 +22,76 @@ export function TodaysGoalCard({ habit, checkins }: TodaysGoalCardProps) {
   const todayCheckIn = getTodayCheckIn(checkins);
   const todayValue = todayCheckIn?.progress ?? habit.current_level;
   const unit = habit.unit ?? "units";
-  const goalPct = getGoalProgress(todayCheckIn?.progress ?? null, habit.current_level, habit.target_level);
+  const goalPct = getGoalProgress(
+    todayCheckIn?.progress ?? null,
+    habit.current_level,
+    habit.target_level
+  );
+
+  const isOnTarget = todayValue <= habit.target_level;
+  const reduction = habit.current_level - habit.target_level;
 
   return (
-    <Card glow className="animate-fade-in-up">
-      <CardHeader>
-        <div>
-          <CardTitle>Today&apos;s Goal</CardTitle>
-          <CardDescription className="mt-1">
-            Reduce {habit.habit_name} toward your target
-          </CardDescription>
+    <Card className="animate-fade-in-up border-border bg-card shadow-md">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle className="text-base font-semibold text-card-foreground">
+              Today&apos;s Goal
+            </CardTitle>
+            <CardDescription className="mt-1">
+              Reduce{" "}
+              <span className="font-medium text-foreground">
+                {habit.habit_name}
+              </span>{" "}
+              toward your target
+            </CardDescription>
+          </div>
+          <Badge
+            className={
+              isOnTarget && todayCheckIn
+                ? "bg-green-500/15 text-green-400 border-green-500/30 shrink-0"
+                : "bg-primary/15 text-primary border-primary/30 shrink-0"
+            }
+          >
+            {isOnTarget && todayCheckIn ? "✓ On Target" : "In Progress"}
+          </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-2xl font-bold text-[#e8eaf6]">{habit.habit_name}</p>
-            <p className="mt-1 text-sm text-[#8892b0]">
-              Target: {habit.target_level} {unit}
-            </p>
+
+      <CardContent className="space-y-5">
+        {/* Stats row */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-lg bg-muted/60 p-3 text-center">
+            <p className="text-xs text-muted-foreground mb-1">Current</p>
+            <p className="text-lg font-bold text-foreground">{habit.current_level}</p>
+            <p className="text-xs text-muted-foreground">{unit}</p>
           </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold text-[#8b85ff]">
-              {todayValue} <span className="text-base font-medium text-[#8892b0]">{unit}</span>
-            </p>
-            <p className="text-xs text-[#8892b0]">
-              {todayCheckIn ? "Logged today" : "Not checked in yet"}
-            </p>
+          <div className="rounded-lg bg-primary/10 border border-primary/20 p-3 text-center">
+            <p className="text-xs text-muted-foreground mb-1">Today</p>
+            <p className="text-lg font-bold text-primary">{todayValue}</p>
+            <p className="text-xs text-muted-foreground">{unit}</p>
+          </div>
+          <div className="rounded-lg bg-muted/60 p-3 text-center">
+            <p className="text-xs text-muted-foreground mb-1">Target</p>
+            <p className="text-lg font-bold text-green-400">{habit.target_level}</p>
+            <p className="text-xs text-muted-foreground">{unit}</p>
           </div>
         </div>
-        <Progress value={goalPct} />
-        <p className="mt-3 text-sm text-[#8892b0]">
-          {Math.round(goalPct)}% toward your reduction goal
-          {todayCheckIn ? "" : " — log a check-in to update today's progress"}
-        </p>
+
+        {/* Progress bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Progress toward goal</span>
+            <span className="font-semibold text-primary">{Math.round(goalPct)}%</span>
+          </div>
+          <Progress value={goalPct} className="h-2.5" />
+          <p className="text-xs text-muted-foreground">
+            {todayCheckIn
+              ? `Logged today · reduce by ${reduction.toFixed(1)} ${unit} total`
+              : "Log a check-in to update your progress"}
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

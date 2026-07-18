@@ -43,3 +43,11 @@ class HabitService:
         if not user:
             raise NotFoundError("User")
         return db.query(Habit).filter(Habit.user_id == user_id).all()
+
+    def update_habit_ai_plan(self, db: Session, habit_id: str, ai_plan: str) -> Habit:
+        """Update a habit's AI plan."""
+        habit = self.get_by_id(db, habit_id)
+        habit.ai_plan = ai_plan
+        db.commit()
+        db.refresh(habit)
+        return habit

@@ -104,7 +104,7 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
         motivation: form.motivation,
       });
       localStorage.setItem(HABIT_ID_KEY, habit.id);
-      router.push("/dashboard");
+      router.push("/plan");
     } catch (err) {
       console.error(err);
       setError("Something went wrong saving your habit. Please try again.");
@@ -119,10 +119,23 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e8eaf6", margin: 0 }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              color: "var(--color-foreground)",
+              margin: 0,
+            }}
+          >
             What habit do you want to reduce?
           </h2>
-          <p style={{ marginTop: "0.5rem", color: "#8892b0", fontSize: "0.9375rem" }}>
+          <p
+            style={{
+              marginTop: "0.5rem",
+              color: "var(--color-muted-foreground)",
+              fontSize: "0.9375rem",
+            }}
+          >
             Pick the one you struggle with most right now.
           </p>
         </div>
@@ -168,10 +181,23 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e8eaf6", margin: 0 }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              color: "var(--color-foreground)",
+              margin: 0,
+            }}
+          >
             {isOther ? "Name your habit" : "Confirm the details"}
           </h2>
-          <p style={{ marginTop: "0.5rem", color: "#8892b0", fontSize: "0.9375rem" }}>
+          <p
+            style={{
+              marginTop: "0.5rem",
+              color: "var(--color-muted-foreground)",
+              fontSize: "0.9375rem",
+            }}
+          >
             {isOther
               ? "Give it a name and define how you measure it."
               : "We've pre-filled these — adjust if needed."}
@@ -222,10 +248,23 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e8eaf6", margin: 0 }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              color: "var(--color-foreground)",
+              margin: 0,
+            }}
+          >
             Set your baseline & goal
           </h2>
-          <p style={{ marginTop: "0.5rem", color: "#8892b0", fontSize: "0.9375rem" }}>
+          <p
+            style={{
+              marginTop: "0.5rem",
+              color: "var(--color-muted-foreground)",
+              fontSize: "0.9375rem",
+            }}
+          >
             Be honest — this helps the AI create a realistic plan for you.
           </p>
         </div>
@@ -292,10 +331,23 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e8eaf6", margin: 0 }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              color: "var(--color-foreground)",
+              margin: 0,
+            }}
+          >
             What usually triggers this habit?
           </h2>
-          <p style={{ marginTop: "0.5rem", color: "#8892b0", fontSize: "0.9375rem" }}>
+          <p
+            style={{
+              marginTop: "0.5rem",
+              color: "var(--color-muted-foreground)",
+              fontSize: "0.9375rem",
+            }}
+          >
             Think about the situations, emotions, or times of day when you reach for it most.
           </p>
         </div>
@@ -343,10 +395,23 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#e8eaf6", margin: 0 }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              color: "var(--color-foreground)",
+              margin: 0,
+            }}
+          >
             Why do you want to change?
           </h2>
-          <p style={{ marginTop: "0.5rem", color: "#8892b0", fontSize: "0.9375rem" }}>
+          <p
+            style={{
+              marginTop: "0.5rem",
+              color: "var(--color-muted-foreground)",
+              fontSize: "0.9375rem",
+            }}
+          >
             Your AI coach will use this to keep you motivated during tough moments.
           </p>
         </div>
@@ -547,7 +612,7 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
 const labelStyle: React.CSSProperties = {
   fontSize: "0.875rem",
   fontWeight: 600,
-  color: "#c5cae9",
+  color: "var(--color-muted-foreground)",
 };
 
 const inputStyle: React.CSSProperties = {
@@ -556,7 +621,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: "10px",
   border: "1px solid rgba(255,255,255,0.1)",
   background: "rgba(255,255,255,0.04)",
-  color: "#e8eaf6",
+  color: "var(--color-card-foreground)",
   fontSize: "0.9375rem",
   outline: "none",
   transition: "border-color 0.2s",
@@ -567,7 +632,7 @@ const chipStyle: React.CSSProperties = {
   borderRadius: "20px",
   border: "1px solid rgba(255,255,255,0.1)",
   background: "rgba(255,255,255,0.04)",
-  color: "#8892b0",
+  color: "var(--color-muted-foreground)",
   fontSize: "0.8125rem",
   cursor: "pointer",
   fontWeight: 500,
@@ -579,7 +644,7 @@ const backBtnStyle: React.CSSProperties = {
   borderRadius: "10px",
   border: "1px solid rgba(255,255,255,0.1)",
   background: "transparent",
-  color: "#8892b0",
+  color: "var(--color-muted-foreground)",
   fontSize: "0.9375rem",
   fontWeight: 600,
   cursor: "pointer",
