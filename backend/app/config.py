@@ -6,9 +6,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # ── Project Info ──────────────────────────────────────────────────────────
-    PROJECT_NAME: str = "PromptWar API"
+    PROJECT_NAME: str = "PromptWar"
     VERSION: str = "1.0.0"
-    DESCRIPTION: str = "FastAPI backend for PromptWar"
+    DESCRIPTION: str = "PromptWar habit coaching and check-in API"
     API_V1_STR: str = "/api/v1"
 
     # ── CORS ──────────────────────────────────────────────────────────────────
